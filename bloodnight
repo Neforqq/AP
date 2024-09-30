@@ -60,7 +60,7 @@ public class bloodnight {
             System.out.println("Це не символ.");
         }
         //boolean
-        System.out.println("Введіть бульове знач. (true/false): ");
+        System.out.println("Введіть бульове значення (true/false): ");
         String booleanInput = scanner.nextLine();
         boolean booleanValue = Boolean.parseBoolean(booleanInput);
         System.out.println("Введений boolean: " + booleanValue);
@@ -68,7 +68,7 @@ public class bloodnight {
     }
     //Інформація
     public static void printbloodnight() {
-        System.out.println("Інформація про примітивні типи в Java:");
+        System.out.println("Інформація про примітивні типи:");
         System.out.printf("%-10s | %-10s | %-20s | %-20s%n", "Тип", "Розмір (байти)", "Мін. знач.", "Макс. знач.");
         System.out.printf("%-10s | %-10d | %-20d | %-20d%n", "byte", 1, Byte.MIN_VALUE, Byte.MAX_VALUE);
         System.out.printf("%-10s | %-10d | %-20d | %-20d%n", "short", 2, Short.MIN_VALUE, Short.MAX_VALUE);
