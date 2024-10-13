@@ -1,0 +1,40 @@
+import java.util.Scanner;
+
+public class exercise1 {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        //введення данних та операції
+        System.out.print("Введіть перше число: ");
+        double n1 = scanner.nextDouble();
+
+        System.out.print("Введіть друге число: ");
+        double n2 = scanner.nextDouble();
+
+        System.out.print("Введіть операцію (+, -, *, /): ");
+        char operation = scanner.next().charAt(0);
+        //використання switch case
+        switch (operation) {
+            case '+':
+                System.out.println("Результат: " + (n1 + n2));
+                break;
+            case '-':
+                System.out.println("Результат: " + (n1 - n2));
+                break;
+            case '*':
+                System.out.println("Результат: " + (n1 * n2));
+                break;
+            case '/':
+                if (n2 != 0) { 
+                    System.out.println("Результат: " + (n1 / n2));
+                } else {
+                    System.out.println("Помилка: Ділити на нуль не можна."); 
+                }
+                break;
+            default:
+                System.out.println("Невірний оператор.");
+                break;
+        }
+
+        scanner.close();
+    }
+}
