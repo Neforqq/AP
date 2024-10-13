@@ -1,0 +1,28 @@
+import java.util.Scanner;
+
+public class Euclid {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Введення  чисел
+        System.out.print("Введіть перше число: ");
+        int n1 = scanner.nextInt();
+
+        System.out.print("Введіть друге число: ");
+        int n2 = scanner.nextInt();
+
+        // Алгоритм Евкліда
+        while (n1 != n2) {
+            if (n1 > n2) {
+                n1 = n1 - n2;
+            } else {
+                n2 = n2 - n1;
+            }
+        }
+
+        // Виведення результату
+        System.out.println("Найбільший спільний дільник: " + n1);
+
+        scanner.close();
+    }
+}
