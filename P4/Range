@@ -1,1 +1,28 @@
+import java.util.Scanner;
 
+public class Range {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        // Запитуємо у користувача початкове та кінцеве значення діапазону
+        System.out.print("Введіть початкове значення діапазону: ");
+        int start = scanner.nextInt();
+
+        System.out.print("Введіть кінцеве значення діапазону: ");
+        int end = scanner.nextInt();
+
+        System.out.print("Введіть просте число від 1 до 9: ");
+        int prime = scanner.nextInt();
+
+        // Виводимо всі значення в діапазоні, крім кратних введеному числу
+        System.out.println(String.format("Числа у діапазоні [%d, %d], які не діляться на %d:", start, end, prime));
+        for (int i = start; i <= end; i++) {
+            if (i % prime == 0) {
+                continue; // Пропускаємо числа, які кратні введеному числу
+            }
+            System.out.print(i + " ");
+        }
+
+        scanner.close();
+    }
+}
