@@ -11,3 +11,6 @@ double y = a * (1 - (Math.cos(c) / (Math.pow(n, 2) - Math.pow(Math.sin(c), 2))))
 
 System.out.println("x =" + x);
 System.out.println("y =" + y);
+   }  
+}
+
