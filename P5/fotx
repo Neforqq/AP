@@ -10,7 +10,8 @@ double a = scanner.nextDouble();
 System.out.print("Введіть значення b: ");
 double b = scanner.nextDouble();
 
-double x = 5;// вибрав своє значення х
+System.out.print("Введіть значення x: ");
+double x = scanner.nextDouble();
 
  double f;
         if (x >= 0 && x < 7) {
