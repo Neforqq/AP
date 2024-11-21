@@ -1,0 +1,42 @@
+import java.util.Scanner;
+import java.util.Random;
+
+public class exercise5 {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Random random = new Random();
+
+        System.out.print("Введіть розмір масиву: ");
+        int size = scanner.nextInt();
+
+        int[] array = new int[size];
+        System.out.println("Масив випадкових чисел:");
+        for (int i = 0; i < size; i++) {
+            array[i] = random.nextInt(100); 
+            System.out.print(array[i] + " ");
+        }
+        System.out.println();
+
+      
+        boolean zrostae = true;
+        boolean spadae = true;
+
+        for (int i = 0; i < size - 1; i++) {
+            if (array[i] > array[i + 1]) {
+                zrostae = false;
+            }
+            if (array[i] < array[i + 1]) {
+                spadae = false;
+            }
+        }
+
+      
+        if (zrostae) {
+            System.out.println("Масив впорядкований за зростанням.");
+        } else if (spadae) {
+            System.out.println("Масив впорядкований за спаданням.");
+        } else {
+            System.out.println("Масив не впорядкований.");
+        }
+    }
+}
