@@ -1,0 +1,36 @@
+import java.util.Scanner;
+
+public class exercise2 {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+
+        System.out.print("Vvedit kilkist kutiv: ");
+        int n = scanner.nextInt();
+
+        if (n < 3) {
+            System.out.println("ne menshe 3 kutiv.");
+            return;
+        }
+
+        int[] kuti  = new int[n];
+        int sum = 0;
+
+        System.out.println("vvedit kuti:");
+        for (int i = 0; i < n; i++) {
+            kuti[i] = scanner.nextInt();
+            if (kuti[i] <= 0) {
+                System.out.println("Kut ne moze byt menshe abo bishe 0.");
+                return;
+            }
+            sum += kuti[i];
+        }
+
+        int sumkutiv = 180 * (n - 2);
+
+        if (sum == sumkutiv) {
+            System.out.println("da, moze isnyvaty.");
+        } else {
+            System.out.println("Net, ne moze.");
+        }
+    }
+}
