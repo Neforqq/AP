@@ -1,0 +1,45 @@
+import java.util.Scanner;
+import java.util.Random;
+
+public class exercise3 {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Random random = new Random();
+
+        System.out.print("Vvedit rozmir mas: ");
+        int size = scanner.nextInt();
+
+        int[] array = new int[size];
+        System.out.println("Масив випадкових чисел:");
+        for (int i = 0; i < size; i++) {
+            array[i] = random.nextInt(100); 
+            System.out.print(array[i] + " ");
+        }
+        System.out.println();
+
+        System.out.print("Введіть значення, яке хочете знайти: ");
+        int metka = scanner.nextInt();
+
+        boolean poisk = false;
+        for (int i = 0; i < size; i++) {
+            if (array[i] == metka) {
+                poisk = true;
+                System.out.print("Введіть нове значення для заміни: ");
+                int newznach = scanner.nextInt();
+                array[i] = newznach;
+                System.out.println("Значення замінено.");
+                break; 
+            }
+        }
+
+        if (!poisk) {
+            System.out.println("Значення не знайдено в масиві.");
+        }
+
+        System.out.println("Масив не змінено:");
+        for (int num : array) {
+            System.out.print(num + " ");
+        }
+        System.out.println();
+    }
+}
