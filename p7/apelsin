@@ -1,38 +1,37 @@
-public class PyramidArray {
+import.java.
+public class apelsin {
     public static void main(String[] args) {
-        int n = 5; // Висота піраміди
-        int[][] pyramid = new int[n][];
+        int n = 5; 
+        int[][] pyramida = new int[n][];
         
-        // Створення зубчастого масиву
         for (int i = 0; i < n; i++) {
-            pyramid[i] = new int[i + 1];
+            pyramida[i] = new int[i + 1];
             for (int j = 0; j <= i; j++) {
-                pyramid[i][j] = j + 1;
+                pyramida[i][j] = j + 1;
             }
         }
 
-        // Виведення піраміди у звичайному порядку
-        System.out.println("Звичайний порядок:");
+
+        System.out.println("Obichna:");
         for (int i = 0; i < n; i++) {
-            // Додаємо пробіли для вирівнювання по центру
+
             for (int k = 0; k < n - i - 1; k++) {
                 System.out.print("  ");
             }
-            for (int j = 0; j < pyramid[i].length; j++) {
-                System.out.print(pyramid[i][j] + "   ");
+            for (int j = 0; j < pyramida[i].length; j++) {
+                System.out.print(pyramida[i][j] + "   ");
             }
             System.out.println();
         }
 
-        // Виведення піраміди у зворотньому порядку
-        System.out.println("Зворотній порядок:");
+        System.out.println("Obernena:");
         for (int i = n - 1; i >= 0; i--) {
-            // Додаємо пробіли для вирівнювання по центру
+
             for (int k = 0; k < n - i - 1; k++) {
                 System.out.print("  ");
             }
-            for (int j = 0; j < pyramid[i].length; j++) {
-                System.out.print(pyramid[i][j] + "   ");
+            for (int j = 0; j < pyramida[i].length; j++) {
+                System.out.print(pyramida[i][j] + "   ");
             }
             System.out.println();
         }
