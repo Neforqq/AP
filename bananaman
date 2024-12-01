@@ -1,0 +1,37 @@
+import java.util.Random;
+import java.lang.Math;
+public class bananaman {
+    public static void main(String[] args) {
+        int radki = 5;
+        int stolbiki = 5;
+        double[][] array = new double[radki][stolbiki];
+        Random random = new Random();
+
+        for (int i = 0; i < radki; i++) {
+            for (int j = 0; j < stolbiki; j++) {
+                array[i][j] = random.nextDouble() * 10; 
+            }
+        }
+        System.out.println("Початковий масив:");
+        for (int i = 0; i < radki; i++) {
+            for (int j = 0; j < stolbiki; j++) {
+                System.out.print(array[i][j] + " ");
+            }
+            System.out.println(); 
+        }
+        for (int i = 0; i < radki; i++) {
+            for (int j = 0; j < stolbiki; j++) {
+                if (i % 2 != 0 || j % 2 != 0) { 
+                    array[i][j] = Math.sqrt(array[i][j]);
+               } 
+            }
+        }
+        System.out.println("Модифікований масив:");
+        for (int i = 0; i < radki; i++) {
+            for (int j = 0; j < stolbiki; j++) {
+                System.out.print(array[i][j] + " "); 
+            }
+            System.out.println(); 
+        }
+    }
+}
