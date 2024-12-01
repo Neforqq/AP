@@ -1,0 +1,48 @@
+import java.util.Scanner;
+import java.util.Random;
+
+public class omar {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        Random random = new Random();
+
+        System.out.print("Vvedit rozmir matrizi: ");
+        int rozmer = scanner.nextInt();
+
+        int[][] matriza = new int[rozmer][rozmer];
+        System.out.println("Matriza:");
+        for (int i = 0; i < rozmer; i++) {
+            for (int j = 0; j < rozmer; j++) {
+                matriza[i][j] = random.nextInt(10) + 1; 
+                System.out.print(matriza[i][j] + " ");
+            }
+            System.out.println();
+        }
+
+        
+        System.out.print("vvedit nomer radka minora (1-" + rozmer + "): ");
+        int banana = scanner.nextInt() - 1; 
+        System.out.print("vvedit nomer stoba minora (1-" + rozmer + "): ");
+        int bonana = scanner.nextInt() - 1;
+
+   
+        int[][] minor = new int[rozmer - 1][rozmer - 1];
+        for (int i = 0, radok = 0; i < rozmer; i++) {
+            if (i == banana) continue; 
+            for (int j = 0, stolbik = 0; j < rozmer; j++) {
+                if (j == bonana) continue; 
+                minor[radok][stolbik] = matriza[i][j];
+                stolbik++;
+            }
+            radok++;
+        }
+
+        System.out.println("Minor:");
+        for (int i = 0; i < rozmer - 1; i++) {
+            for (int j = 0; j < rozmer - 1; j++) {
+                System.out.print(minor[i][j] + " ");
+            }
+            System.out.println();
+        }
+    }
+}
