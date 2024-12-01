@@ -21,7 +21,7 @@ public class poehali {
             }
         }
 
-        System.out.println("Введена матриця:");
+        System.out.println("Matriza:");
         for (int i = 0; i < rozmer; i++) {
             for (int j = 0; j < rozmer; j++) {
                 System.out.print(matriza[i][j] + " ");
