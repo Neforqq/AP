@@ -2,47 +2,44 @@ import java.util.Scanner;
 
 public class poehali {
     public static void main(String[] args) {
-        int size = 5; // Розмір матриці
-        double[][] matrix = new double[size][size];
+        int rozmer = 5;
+        double[][] matriza = new double[rozmer][rozmer];
         Scanner scanner = new Scanner(System.in);
 
-        // Заповнення матриці користувачем
-        System.out.println("Введіть елементи матриці розміром 5x5:");
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
+        System.out.println("Vvedit matrizu:");
+        for (int i = 0; i < rozmer; i++) {
+            for (int j = 0; j < rozmer; j++) {
                 while (true) {
-                    System.out.print("Елемент [" + i + "][" + j + "] (не може бути 0): ");
-                    matrix[i][j] = scanner.nextDouble();
-                    if (matrix[i][j] != 0) {
-                        break; // Виходимо з циклу, якщо значення не 0
+                    System.out.print("Element [" + i + "][" + j + "] krome 0: ");
+                    matriza[i][j] = scanner.nextDouble();
+                    if (matriza[i][j] != 0) {
+                        break; 
                     } else {
-                        System.out.println("Помилка: значення не може бути 0. Спробуйте ще раз.");
+                        System.out.println("Pomilka: znachenna ne moze = 0.");
                     }
                 }
             }
         }
 
-        // Виведення введеної матриці
         System.out.println("Введена матриця:");
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                System.out.print(matrix[i][j] + " ");
+        for (int i = 0; i < rozmer; i++) {
+            for (int j = 0; j < rozmer; j++) {
+                System.out.print(matriza[i][j] + " ");
             }
             System.out.println();
         }
 
-        // Зведення до верхньої трикутної матриці
-        double determinant = 1; // Початковий визначник
-        for (int i = 0; i < size; i++) {
-            for (int k = i + 1; k < size; k++) {
-                double factor = matrix[k][i] / matrix[i][i]; // Коефіцієнт для обнулення
-                for (int j = i; j < size; j++) {
-                    matrix[k][j] -= factor * matrix[i][j]; // Обнулення елемента
+        double perhot = 1; 
+        for (int i = 0; i < rozmer; i++) {
+            for (int k = i + 1; k < rozmer; k++) {
+                double nul = matriza[k][i] / matriza[i][i]; 
+                for (int j = i; j < rozmer; j++) {
+                    matriza[k][j] -= nul * matriza[i][j]; 
                 }
             }
-            determinant *= matrix[i][i]; // Множимо діагональні елементи
+            perhot *= matriza[i][i]; 
         }
 
-        System.out.println("Визначник матриці: " + determinant);
+        System.out.println("Vuznachnik: " + perhot);
     }
 }
