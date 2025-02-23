@@ -1,0 +1,83 @@
+import java.util.Scanner;
+public class Main {
+    public static String line() {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println("Введіть строкy:");
+            String in = scanner.nextLine();
+            in.trim();
+            String[] slova = in.split("\\s+");
+            if (slova.length >= 2) {
+                boolean dos = true;
+                for (int i = 0; i < slova.length; i++) {
+                    if (slova[i].length() < 3) {
+                        dos = false;
+                        break;
+                    }
+                }
+                if (dos) {
+                    return in;
+                }
+            }
+            System.out.println("Умова не виконане.Спробуйте ще раз");
+        }
+    }
+    public static String perevernytString(String str) {
+        char[] charArray = str.toCharArray();
+        int left = 0, right = charArray.length - 1;
+
+        while (left < right) {
+            char temp = charArray[left];
+            charArray[left] = charArray[right];
+            charArray[right] = temp;
+
+            left++;
+            right--;
+        }
+
+        return new String(charArray);
+    }
+    public static String reverseString(String str) {
+        String[] words = str.split("\\s+");
+        StringBuilder result = new StringBuilder();
+
+        for (int i = 0; i < words.length; i++) {
+            char[] charArray = words[i].toCharArray();
+            int left = 0, right = charArray.length - 1;
+
+            while (left < right) {
+                char temp = charArray[left];
+                charArray[left] = charArray[right];
+                charArray[right] = temp;
+                left++;
+                right--;
+            }
+
+            result.append(new String(charArray)).append(" ");
+        }
+
+        return result.toString().trim();
+    }
+
+    public static void main(String[] args){
+        Scanner scanner = new Scanner(System.in);
+        String dossString = line();
+        System.out.println("Введена строка:" + dossString);
+        while (true) {
+            System.out.println("Оберіть дію: \n1 - Перевернути всю строку \n2 - Перевернути кожне слово \n0 - Вийти");
+            int choice = scanner.nextInt();
+            scanner.nextLine();
+
+            if (choice == 1) {
+                System.out.println("Результат: " + perevernytString(dossString));
+            } else if (choice == 2) {
+                System.out.println("Результат: " + reverseString(dossString));
+            } else if (choice == 0) {
+                System.out.println("Програма завершена.");
+                break;
+            } else {
+                System.out.println("Невірний вибір, спробуйте ще раз.");
+            }
+        }
+    }
+}
