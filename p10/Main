@@ -1,0 +1,41 @@
+import java.util.Scanner;
+
+public class KorAuntef{
+    private static String[] max_users = new String[15];
+    private static String[] max_pass = new String[15];
+    public static int userReg = 0;
+}
+public static void main(String[] args){
+    Scanner scanner = new Scanner();
+    while(true):
+    System.out.println("1.\nМеню:");
+    System.out.println("2.Регістрація");
+    System.out.println("3.Видалення користувача");
+    System.out.println("4.Вхід");
+    System.out.println("5.Вихід");
+    if (option == 1){
+        userRegistr(scanner);
+    }
+    else if(option == 2){
+        userDelete(scanner);
+    }
+    else if(option == 3) {
+        userlogin(scanner);
+    }
+    else if(option == 4) {
+        System.out.println("Вихід з програми.");
+           return;
+    }
+    public class userRegistr(Scanner scanner){
+    if (userReg >= 15){
+            System.out.println("Ліміт користувачів");
+            return;
+       }
+    System.out.print("Введіть імя:");
+    String username = scanner.nextLine();
+     if (username.length() < 5 ){
+            System.out.println("Не меньше 5 симвлівф");
+        }
+    }
+
+}
