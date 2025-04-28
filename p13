@@ -1,0 +1,107 @@
+import java.util.Scanner;
+
+public class Data {
+
+    static String[] data = new String[50];
+    static String[] zapus = new String[50];
+    static int count = 0;
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        boolean running = true;
+
+        while (running) {
+            System.out.println("\n--- Мій щоденник ---");
+            System.out.println("1. Додати запис");
+            System.out.println("2. Видалити запис за датою");
+            System.out.println("3. Переглянути усі записи");
+            System.out.println("4. Вийти");
+            System.out.print("Ваш вибір: ");
+            String choice = scanner.nextLine();
+
+            switch (choice) {
+                case "1":
+                    addzapus(scanner);
+                    break;
+                case "2":
+                    deletezapus(scanner);
+                    break;
+                case "3":
+                    viewzapus();
+                    break;
+                case "4":
+                    running = false;
+                    System.out.println("Вихід з щоденника.");
+                    break;
+                default:
+                    System.out.println("Невірний вибір. Спробуйте ще раз.");
+            }
+        }
+        scanner.close();
+    }
+
+    public static void addzapus(Scanner scanner) {
+        if (count >= data.length) {
+            System.out.println("Щоденник заповнений!");
+            return;
+        }
+
+        System.out.print("Введіть дату (формат: YYYY-MM-DD): ");
+        String date = scanner.nextLine();
+        System.out.println("Введіть текст запису (введіть 'hvatit' для завершення):");
+
+        String text = "";
+        while (true) {
+            String line = scanner.nextLine();
+            if (line.equals("hvatit")) {
+                break;
+            }
+            text += line + "\n";
+        }
+
+        data[count] = date;
+        zapus[count] = text;
+        count++;
+
+        System.out.println("Запис додано!");
+    }
+
+    public static void deletezapus(Scanner scanner) {
+        System.out.print("Введіть дату запису, який потрібно видалити (формат: YYYY-MM-DD): ");
+        String dateToDelete = scanner.nextLine();
+        boolean found = false;
+
+        for (int i = 0; i < count; i++) {
+            if (data[i] != null && data[i].equals(dateToDelete)) {
+                for (int j = i; j < count - 1; j++) {
+                    data[j] = data[j + 1];
+                    zapus[j] = zapus[j + 1];
+                }
+                data[count - 1] = null;
+                zapus[count - 1] = null;
+                count--;
+                found = true;
+                System.out.println("Запис видалено.");
+                break;
+            }
+        }
+
+        if (!found) {
+            System.out.println("Запис з такою датою не знайдено.");
+        }
+    }
+
+    public static void viewzapus() {
+        if (count == 0) {
+            System.out.println("Щоденник порожній.");
+            return;
+        }
+
+        System.out.println("\n--- Усі записи ---");
+        for (int i = 0; i < count; i++) {
+            System.out.println((i + 1) + ". Дата: " + data[i]);
+            System.out.println(zapus[i]);
+        }
+        System.out.println("------------------");
+    }
+}
