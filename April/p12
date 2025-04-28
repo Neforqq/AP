@@ -1,0 +1,115 @@
+import java.io.*;
+import java.util.Scanner;
+
+public class TextRed {
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        boolean running = true;
+
+        while (running) {
+            System.out.println("\n--- Текстовий редактор ---");
+            System.out.println("1. Записати до файлу");
+            System.out.println("2. Прочитати вміст файлу");
+            System.out.println("3. Прочитати діапазон рядків");
+            System.out.println("4. Вийти");
+            System.out.print("Ваш вибір: ");
+            String choice = scanner.nextLine();
+
+            switch (choice) {
+                case "1":
+                    writeF(scanner);
+                    break;
+                case "2":
+                    readF();
+                    break;
+                case "3":
+                    readNF(scanner);
+                    break;
+                case "4":
+                    running = false;
+                    System.out.println("Вихід з редактора.");
+                    break;
+                default:
+                    System.out.println("Невірний вибір. Спробуйте ще раз.");
+            }
+        }
+        scanner.close();
+    }
+
+    public static void writeF(Scanner scanner) {
+        System.out.println("Оберіть режим:");
+        System.out.println("1. Перезаписати файл");
+        System.out.println("2. Додати в кінець файлу");
+        String mode = scanner.nextLine();
+
+        boolean append = mode.equals("2");
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("textfile.txt", append))) {
+            System.out.println("Введіть текст (введіть 'hvatit' для завершення введення):");
+            int lineN = countLines();
+            if (!append) {
+                lineN = 0;
+            }
+            while (true) {
+                String line = scanner.nextLine();
+                if (line.equals("hvatit")) {
+                    break;
+                }
+                writer.write((lineN + 1) + ". " + line);
+                writer.newLine();
+                lineN++;
+            }
+            System.out.println("Текст записано успішно.");
+        } catch (IOException e) {
+            System.out.println("Сталася помилка при записі: " + e.getMessage());
+        }
+    }
+
+    public static void readF() {
+        try (BufferedReader reader = new BufferedReader(new FileReader("textfile.txt"))) {
+            System.out.println("\n--- Вміст файлу ---");
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+            System.out.println("-------------------");
+        } catch (IOException e) {
+            System.out.println("Файл не знайдено або помилка читання: " + e.getMessage());
+        }
+    }
+
+    public static void readNF(Scanner scanner) {
+        System.out.print("Введіть номер початкового рядка: ");
+        int start = Integer.parseInt(scanner.nextLine());
+        System.out.print("Введіть номер кінцевого рядка: ");
+        int end = Integer.parseInt(scanner.nextLine());
+
+        try (BufferedReader reader = new BufferedReader(new FileReader("textfile.txt"))) {
+            System.out.println("\n--- Обраний діапазон ---");
+            String line;
+            int currentLine = 1;
+            while ((line = reader.readLine()) != null) {
+                if (currentLine >= start && currentLine <= end) {
+                    System.out.println(line);
+                }
+                currentLine++;
+            }
+            System.out.println("-------------------------");
+        } catch (IOException e) {
+            System.out.println("Файл не знайдено або помилка читання: " + e.getMessage());
+        }
+    }
+
+    private static int countLines() {
+        int lines = 0;
+        try (BufferedReader reader = new BufferedReader(new FileReader("textfile.txt"))) {
+            while (reader.readLine() != null) {
+                lines++;
+            }
+        } catch (IOException e) {
+
+        }
+        return lines;
+    }
+}
