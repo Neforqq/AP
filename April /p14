@@ -1,0 +1,190 @@
+import java.io.*;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Scanner;
+
+public class Data {
+
+    static String[] data = new String[50];
+    static String[] zapus = new String[50];
+    static int count = 0;
+    static DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        boolean running = true;
+
+        System.out.println("Вітаємо у щоденнику!");
+        System.out.println("1. Створити новий щоденник");
+        System.out.println("2. Відкрити існуючий щоденник");
+        System.out.println("Виберіть опцію:");
+        String choice = scanner.nextLine();
+
+        if (choice.equals("2")) {
+            System.out.print("Введіть ім'я файлу для відкриття: ");
+            String filename = scanner.nextLine();
+            loadDnevnik(filename);
+        }
+
+        while (running) {
+            System.out.println("\n--- Мій щоденник ---");
+            System.out.println("1. Додати запис");
+            System.out.println("2. Видалити запис за датою");
+            System.out.println("3. Переглянути усі записи");
+            System.out.println("4. Вийти");
+            System.out.print("Ваш вибір: ");
+            choice = scanner.nextLine();
+
+            switch (choice) {
+                case "1":
+                    addzapus(scanner);
+                    break;
+                case "2":
+                    deletezapus(scanner);
+                    break;
+                case "3":
+                    viewzapus(scanner);
+                    break;
+                case "4":
+                    running = false;
+                    saveDnevnik(scanner);
+                    break;
+                default:
+                    System.out.println("Невірний вибір. Спробуйте ще раз.");
+            }
+        }
+        scanner.close();
+    }
+
+    public static void addzapus(Scanner scanner) {
+        if (count >= data.length) {
+            System.out.println("Щоденник заповнений!");
+            return;
+        }
+
+        System.out.print("Введіть дату запису (формат yyyy-MM-dd): ");
+        try {
+            String vveddate = scanner.nextLine();
+            LocalDate date = LocalDate.parse(vveddate, formatter);
+            System.out.println("Введіть текст запису (введіть 'hvatit' для завершення):");
+
+            String text = "";
+            while (true) {
+                String line = scanner.nextLine();
+                if (line.equals("hvatit")) {
+                    break;
+                }
+                text += line + "\n";
+            }
+
+            data[count] = date.format(formatter);
+            zapus[count] = text;
+            count++;
+
+            System.out.println("Запис додано!");
+        } catch (Exception e) {
+            System.out.println("Некоректний формат дати. Спробуйте ще раз.");
+        }
+    }
+
+    public static void deletezapus(Scanner scanner) {
+        System.out.print("Введіть дату запису для видалення (формат yyyy-MM-dd): ");
+        String deletedate = scanner.nextLine();
+        boolean found = false;
+
+        for (int i = 0; i < count; i++) {
+            if (data[i] != null && data[i].equals(deletedate)) {
+                for (int j = i; j < count - 1; j++) {
+                    data[j] = data[j + 1];
+                    zapus[j] = zapus[j + 1];
+                }
+                data[count - 1] = null;
+                zapus[count - 1] = null;
+                count--;
+                found = true;
+                System.out.println("Запис видалено.");
+                break;
+            }
+        }
+
+        if (!found) {
+            System.out.println("Запис з такою датою не знайдено.");
+        }
+    }
+
+    public static void viewzapus(Scanner scanner) {
+        if (count == 0) {
+            System.out.println("Щоденник порожній.");
+            return;
+        }
+
+        System.out.print("Введіть бажаний формат дати або натисніть Enter для стандартного (yyyy-MM-dd): ");
+        String format = scanner.nextLine();
+        DateTimeFormatter viewFormatter;
+        if (format.isEmpty()) {
+            viewFormatter = formatter;
+        } else {
+            try {
+                viewFormatter = DateTimeFormatter.ofPattern(format);
+            } catch (Exception e) {
+                System.out.println("Некоректний формат. Використовую стандартний.");
+                viewFormatter = formatter;
+            }
+        }
+
+        System.out.println("\n--- Усі записи ---");
+        for (int i = 0; i < count; i++) {
+            try {
+                LocalDate date = LocalDate.parse(data[i], formatter);
+                System.out.println((i + 1) + ". Дата: " + date.format(viewFormatter));
+                System.out.println(zapus[i]);
+            } catch (Exception e) {
+                System.out.println((i + 1) + ". Дата: " + data[i]);
+                System.out.println(zapus[i]);
+            }
+        }
+        System.out.println("------------------");
+    }
+
+    public static void saveDnevnik(Scanner scanner) {
+        System.out.print("Бажаєте зберегти щоденник? (так/ні): ");
+        String answer = scanner.nextLine();
+        if (answer.equalsIgnoreCase("так")) {
+            System.out.print("Введіть ім'я файлу для збереження: ");
+            String filename = scanner.nextLine();
+            saveD(filename);
+        }
+    }
+    public static void saveD(String filename) {
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename))) {
+            for (int i = 0; i < count; i++) {
+                writer.write(data[i]);
+                writer.newLine();
+                writer.write(zapus[i]);
+                writer.newLine();
+            }
+            System.out.println("Щоденник збережено!");
+        } catch (IOException e) {
+            System.out.println("Помилка при збереженні щоденника: " + e.getMessage());
+        }
+    }
+
+    public static void loadDnevnik(String filename) {
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String date;
+            while ((date = reader.readLine()) != null) {
+                StringBuilder entry = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null && !line.trim().isEmpty()) {
+                    entry.append(line).append("\n");
+                }
+                data[count] = date;
+                zapus[count] = entry.toString();
+                count++;
+            }
+            System.out.println("Щоденник завантажено!");
+        } catch (IOException e) {
+            System.out.println("Помилка при завантаженні щоденника: " + e.getMessage());
+        }
+    }
+}
