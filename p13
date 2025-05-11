@@ -1,8 +1,9 @@
+import java.time.LocalDate;
 import java.util.Scanner;
 
 public class Data {
 
-    static String[] data = new String[50];
+    static LocalDate[] data = new LocalDate[50];
     static String[] zapus = new String[50];
     static int count = 0;
 
@@ -46,21 +47,29 @@ public class Data {
             return;
         }
 
-        System.out.print("Введіть дату (формат: YYYY-MM-DD): ");
-        String date = scanner.nextLine();
-        System.out.println("Введіть текст запису (введіть 'hvatit' для завершення):");
+        LocalDate date = null;
+        while (date == null) {
+            System.out.print("Введіть дату (формат: YYYY-MM-DD): ");
+            String dateInput = scanner.nextLine();
+            try {
+                date = LocalDate.parse(dateInput);
+            } catch (Exception e) {
+                System.out.println("Неправильний формат дати. Спробуйте ще раз.");
+            }
+        }
 
-        String text = "";
+        System.out.println("Введіть текст запису (введіть 'hvatit' для завершення):");
+        StringBuilder text = new StringBuilder();
         while (true) {
             String line = scanner.nextLine();
             if (line.equals("hvatit")) {
                 break;
             }
-            text += line + "\n";
+            text.append(line).append("\n");
         }
 
         data[count] = date;
-        zapus[count] = text;
+        zapus[count] = text.toString();
         count++;
 
         System.out.println("Запис додано!");
@@ -68,9 +77,17 @@ public class Data {
 
     public static void deletezapus(Scanner scanner) {
         System.out.print("Введіть дату запису, який потрібно видалити (формат: YYYY-MM-DD): ");
-        String dateToDelete = scanner.nextLine();
-        boolean found = false;
+        String dateInput = scanner.nextLine();
+        LocalDate dateToDelete;
 
+        try {
+            dateToDelete = LocalDate.parse(dateInput);
+        } catch (Exception e) {
+            System.out.println("Неправильний формат дати.");
+            return;
+        }
+
+        boolean found = false;
         for (int i = 0; i < count; i++) {
             if (data[i] != null && data[i].equals(dateToDelete)) {
                 for (int j = i; j < count - 1; j++) {
