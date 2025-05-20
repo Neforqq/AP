@@ -1,0 +1,326 @@
+// а почему сохранилась старая статистика?
+//Main
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        String[] players = utils.loadConfig();
+        Game.nameX = players[0];
+        Game.nameO = players[1];
+        int size = Integer.parseInt(players[2]);
+
+        while (true) {
+            int option = Game.Menu(scanner);
+            if (option == 1) {
+                break;
+            } else if (option == 2) {
+                size = Game.configBoardSize(scanner);
+                utils.saveConfig(Game.nameX, Game.nameO, size);
+            } else if (option == 3) {
+                System.out.println("Вихід з гри.");
+                return;
+            }
+        }
+        char[][] board = Game.constrBoard(size);
+        Game.playGame(scanner, board, size);
+        scanner.close();
+    }
+}
+//Game
+import java.util.Scanner;
+
+public class Game {
+    public static String nameX;
+    public static String nameO;
+
+    public static int Menu(Scanner scanner) {
+        while (true) {
+            System.out.println("Головне меню:");
+            System.out.println("1. Грати");
+            System.out.println("2. Налаштування");
+            System.out.println("3. Вихід");
+            System.out.println("4. Переглянути статистику");
+            System.out.print("Виберіть опцію: ");
+
+            if (scanner.hasNextInt()) {
+                int option = scanner.nextInt();
+                if (option == 1 || option == 2 || option == 3) {
+                    return option;
+                } else if (option == 4) {
+                    utils.showStats();
+                    continue;
+                }
+            } else {
+                scanner.next();
+            }
+            System.out.println("Некоректний вибір, спробуйте ще раз.");
+        }
+    }
+
+    public static int configBoardSize(Scanner scanner) {
+        System.out.println("Налаштування: виберіть розмір поля (3, 5, 7, 9): ");
+        while (true) {
+            if (scanner.hasNextInt()) {
+                int Size = scanner.nextInt();
+                if (Size == 3 || Size == 5 || Size == 7 || Size == 9) {
+                    System.out.println("Розмір поля змінено на " + Size + "x" + Size);
+                    return Size;
+                }
+            } else {
+                scanner.next();
+            }
+            System.out.println("Некоректний вибір, спробуйте ще раз.");
+        }
+    }
+
+    public static char[][] constrBoard(int size) {
+        char[][] board = new char[size * 2 - 1][size * 2 - 1];
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                if (i % 2 == 0 && j % 2 == 0) board[i][j] = ' ';
+                else if (i % 2 == 0) board[i][j] = '|';
+                else if (j % 2 == 0) board[i][j] = '-';
+                else board[i][j] = ' ';
+            }
+        }
+        return board;
+    }
+
+    public static void playGame(Scanner scanner, char[][] board, int size) {
+        char player = 'X';
+        int moves = 0;
+
+        while (true) {
+            printBoard(board);
+            int row = getInput(scanner, player, "рядок", size);
+            int col = getInput(scanner, player, "стовпчик", size);
+
+            if (board[row * 2][col * 2] != ' ') {
+                System.out.println("Клітинка зайнята, спробуйте ще раз.");
+                continue;
+            }
+
+            board[row * 2][col * 2] = player;
+            moves++;
+
+            if (checkWin(board, size, player)) {
+                printBoard(board);
+                System.out.println("Гравець " + player + " переміг!");
+                String winnerName = (player == 'X') ? nameX : nameO;
+                utils.saveStats(winnerName, String.valueOf(player), size);
+                break;
+            }
+
+            if (moves == size * size) {
+                printBoard(board);
+                System.out.println("Нічия!");
+                break;
+            }
+
+            player = (player == 'X') ? 'O' : 'X';
+        }
+    }
+
+    private static void printBoard(char[][] board) {
+        for (char[] row : board) {
+            for (char cell : row) {
+                System.out.print(cell);
+            }
+            System.out.println();
+        }
+    }
+
+    private static int getInput(Scanner scanner, char player, String type, int size) {
+        while (true) {
+            System.out.print("Гравець " + player + ", введіть " + type + " (1-" + size + "): ");
+            if (scanner.hasNextInt()) {
+                int input = scanner.nextInt() - 1;
+                if (input >= 0 && input < size) return input;
+            } else {
+                scanner.next();
+            }
+            System.out.println("Невірний ввід, спробуйте ще раз.");
+        }
+    }
+
+    private static boolean checkWin(char[][] board, int size, char player) {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (j + 2 < size &&
+                        board[i * 2][j * 2] == player &&
+                        board[i * 2][(j + 1) * 2] == player &&
+                        board[i * 2][(j + 2) * 2] == player) return true;
+
+                if (i + 2 < size &&
+                        board[i * 2][j * 2] == player &&
+                        board[(i + 1) * 2][j * 2] == player &&
+                        board[(i + 2) * 2][j * 2] == player) return true;
+
+                if (i + 2 < size && j + 2 < size &&
+                        board[i * 2][j * 2] == player &&
+                        board[(i + 1) * 2][(j + 1) * 2] == player &&
+                        board[(i + 2) * 2][(j + 2) * 2] == player) return true;
+
+                if (i + 2 < size && j - 2 >= 0 &&
+                        board[i * 2][j * 2] == player &&
+                        board[(i + 1) * 2][(j - 1) * 2] == player &&
+                        board[(i + 2) * 2][(j - 2) * 2] == player) return true;
+            }
+        }
+        return false;
+    }
+}
+//utils
+import java.io.*;
+import java.util.Scanner;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+public class utils {
+
+    public static void saveConfig(String nameX, String nameO, int size) {
+        try {
+            FileWriter writer = new FileWriter("config.txt");
+            writer.write(nameX + "\n");
+            writer.write(nameO + "\n");
+            writer.write(size + "\n");
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Помилка збереження конфігурації.");
+        }
+    }
+
+    public static String[] loadConfig() {
+        String[] config = new String[3];
+        try {
+            File file = new File("config.txt");
+            if (!file.exists()) {
+                config[0] = "Гравець X";
+                config[1] = "Гравець O";
+                config[2] = "3";
+                saveConfig(config[0], config[1], 3);
+            } else {
+                Scanner sc = new Scanner(file);
+                config[0] = sc.nextLine();
+                config[1] = sc.nextLine();
+                config[2] = sc.nextLine();
+                sc.close();
+            }
+        } catch (IOException e) {
+            config[0] = "Гравець X";
+            config[1] = "Гравець O";
+            config[2] = "3";
+        }
+        return config;
+    }
+
+    public static void saveStats(String winner, String symbol, int size) {
+        try {
+            FileWriter writer = new FileWriter("stats.txt", true);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+            String formattedDate = LocalDateTime.now().format(formatter);
+            writer.write("Переможець: " + winner + " (" + symbol + "), Розмір: " + size + "x" + size +
+                    ", Дата: " + formattedDate + "\n");
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Помилка збереження статистики.");
+        }
+    }
+
+    public static void showStats() {
+        try {
+            File file = new File("stats.txt");
+            if (!file.exists()) {
+                System.out.println("Статистика відсутня.");
+                return;
+            }
+            Scanner sc = new Scanner(file);
+            System.out.println("=== Статистика ===");
+            while (sc.hasNextLine()) {
+                System.out.println(sc.nextLine());
+            }
+            sc.close();
+        } catch (IOException e) {
+            System.out.println("Помилка читання статистики.");
+        }
+    }
+}
+//utils
+import java.io.*;
+import java.util.Scanner;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+public class utils {
+
+    public static void saveConfig(String nameX, String nameO, int size) {
+        try {
+            FileWriter writer = new FileWriter("config.txt");
+            writer.write(nameX + "\n");
+            writer.write(nameO + "\n");
+            writer.write(size + "\n");
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Помилка збереження конфігурації.");
+        }
+    }
+
+    public static String[] loadConfig() {
+        String[] config = new String[3];
+        try {
+            File file = new File("config.txt");
+            if (!file.exists()) {
+                config[0] = "Гравець X";
+                config[1] = "Гравець O";
+                config[2] = "3";
+                saveConfig(config[0], config[1], 3);
+            } else {
+                Scanner sc = new Scanner(file);
+                config[0] = sc.nextLine();
+                config[1] = sc.nextLine();
+                config[2] = sc.nextLine();
+                sc.close();
+            }
+        } catch (IOException e) {
+            config[0] = "Гравець X";
+            config[1] = "Гравець O";
+            config[2] = "3";
+        }
+        return config;
+    }
+
+    public static void saveStats(String winner, String symbol, int size) {
+        try {
+            FileWriter writer = new FileWriter("stats.txt", true);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+            String formattedDate = LocalDateTime.now().format(formatter);
+            writer.write("Переможець: " + winner + " (" + symbol + "), Розмір: " + size + "x" + size +
+                    ", Дата: " + formattedDate + "\n");
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Помилка збереження статистики.");
+        }
+    }
+
+    public static void showStats() {
+        try {
+            File file = new File("stats.txt");
+            if (!file.exists()) {
+                System.out.println("Статистика відсутня.");
+                return;
+            }
+            Scanner sc = new Scanner(file);
+            System.out.println("=== Статистика ===");
+            while (sc.hasNextLine()) {
+                System.out.println(sc.nextLine());
+            }
+            sc.close();
+        } catch (IOException e) {
+            System.out.println("Помилка читання статистики.");
+        }
+    }
+}
+
+
+
