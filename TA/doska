@@ -45,30 +45,7 @@ public class doska {
         }
     }
 }
-//
-public class doska {
-    public static void main(String[] args) {
-        int N = 8; 
-        char[][] board = new char[N][N];
-        for (int i = 0; i < N; i++)
-            for (int j = 0; j < N; j++)
-                board[i][j] = '.';
-        int row = 0, col = 0;
-        while (row < N && col < N) {
-            board[row][col] = 'B'; 
-            row++;
-            col += 2; 
-            if (col >= N) {
-                col = (col % 2 == 0) ? 1 : 0;
-            }
-        }
-        for (int i = 0; i < N; i++) {
-            for (int j = 0; j < N; j++)
-                System.out.print(board[i][j] + " ");
-            System.out.println();
-        }
-    }
-}
+
 
 
 
