@@ -1,0 +1,48 @@
+public class ContestProfit {
+
+    static class Contest {
+        int start;
+        int end;
+        int profit;
+
+        Contest(int s, int e, int p) {
+            start = s;
+            end = e;
+            profit = p;
+        }
+    }
+
+    public static void main(String[] args) {
+        int[] start =  {1, 3, 0, 5, 8, 5};
+        int[] end =    {2, 4, 6, 7, 9, 9};
+        int[] profit = {50, 20, 100, 200, 150, 80};
+        int n = start.length;
+
+        Contest[] contests = new Contest[n];
+        for (int i = 0; i < n; i++) {
+            contests[i] = new Contest(start[i], end[i], profit[i]);
+        }
+
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if (contests[i].end > contests[j].end) {
+                    Contest temp = contests[i];
+                    contests[i] = contests[j];
+                    contests[j] = temp;
+                }
+            }
+        }
+
+        int totalProfit = 0;
+        int lastEndTime = -1;
+
+        for (int i = 0; i < n; i++) {
+            if (contests[i].start >= lastEndTime) {
+                totalProfit += contests[i].profit;
+                lastEndTime = contests[i].end;
+            }
+        }
+
+        System.out.println("Максимальний прибуток : " + totalProfit);
+    }
+}
