@@ -1,4 +1,4 @@
-public class Main {
+public class ChangeReturn {
     public static void main(String[] args) {
         int[] bills = {50, 20, 10, 5, 1};
         int S = 73;
