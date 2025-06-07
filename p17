@@ -1,0 +1,263 @@
+//Main
+import java.util.Scanner;
+import java.io.*;
+
+public class Main {
+    private static GameSettings settings;
+
+    public static void main(String[] args) {
+        Scanner scanner = new Scanner(System.in);
+        settings = loadConfig();
+
+        while (true) {
+            int option = Menu(scanner);
+            if (option == 1) {
+                break;
+            } else if (option == 2) {
+                settings.boardSize = configBoardSize(scanner);
+                saveConfig(settings);
+            } else if (option == 3) {
+                System.out.println("Вихід з гри.");
+                return;
+            }
+        }
+
+        GameBoard gameBoard = new GameBoard(settings.boardSize);
+        playGame(scanner, gameBoard, settings);
+        scanner.close();
+    }
+
+    private static int Menu(Scanner scanner) {
+        while (true) {
+            System.out.println("Головне меню:");
+            System.out.println("1. Грати");
+            System.out.println("2. Налаштування");
+            System.out.println("3. Вихід");
+            System.out.println("4. Переглянути статистику");
+            System.out.print("Виберіть опцію: ");
+
+            if (scanner.hasNextInt()) {
+                int option = scanner.nextInt();
+                if (option >= 1 && option <= 3) {
+                    return option;
+                } else if (option == 4) {
+                    showStats();
+                }
+            } else {
+                scanner.next();
+            }
+            System.out.println("Некоректний вибір, спробуйте ще раз.");
+        }
+    }
+
+    private static int configBoardSize(Scanner scanner) {
+        System.out.println("Налаштування: виберіть розмір поля (3, 5, 7, 9): ");
+        while (true) {
+            if (scanner.hasNextInt()) {
+                int Size = scanner.nextInt();
+                if (Size == 3 || Size == 5 || Size == 7 || Size == 9) {
+                    System.out.println("Розмір поля змінено на " + Size + "x" + Size);
+                    return Size;
+                }
+            } else {
+                scanner.next();
+            }
+            System.out.println("Некоректний вибір, спробуйте ще раз.");
+        }
+    }
+
+    private static void playGame(Scanner scanner, GameBoard gameBoard, GameSettings settings) {
+        char player = 'X';
+        int moves = 0;
+
+        while (true) {
+            printBoard(gameBoard.board);
+            int row = getInput(scanner, player, "рядок", settings.boardSize);
+            int col = getInput(scanner, player, "стовпчик", settings.boardSize);
+
+            if (gameBoard.board[row * 2][col * 2] != ' ') {
+                System.out.println("Клітинка зайнята, спробуйте ще раз.");
+                continue;
+            }
+
+            gameBoard.board[row * 2][col * 2] = player;
+            moves++;
+
+            if (checkWin(gameBoard.board, settings.boardSize, player)) {
+                printBoard(gameBoard.board);
+                System.out.println("Гравець " + player + " переміг!");
+                String winnerName = (player == 'X') ? settings.nameX : settings.nameO;
+                saveStats(new GameStats(winnerName, String.valueOf(player), settings.boardSize));
+                break;
+            }
+
+            if (moves == settings.boardSize * settings.boardSize) {
+                printBoard(gameBoard.board);
+                System.out.println("Нічия!");
+                break;
+            }
+
+            player = (player == 'X') ? 'O' : 'X';
+        }
+    }
+
+    private static void printBoard(char[][] board) {
+        for (char[] row : board) {
+            for (char cell : row) {
+                System.out.print(cell);
+            }
+            System.out.println();
+        }
+    }
+
+    private static int getInput(Scanner scanner, char player, String type, int size) {
+        while (true) {
+            System.out.print("Гравець " + player + ", введіть " + type + " (1-" + size + "): ");
+            if (scanner.hasNextInt()) {
+                int input = scanner.nextInt() - 1;
+                if (input >= 0 && input < size) return input;
+            } else {
+                scanner.next();
+            }
+            System.out.println("Невірний ввід, спробуйте ще раз.");
+        }
+    }
+
+    private static boolean checkWin(char[][] board, int size, char player) {
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (j + 2 < size &&
+                        board[i * 2][j * 2] == player &&
+                        board[i * 2][(j + 1) * 2] == player &&
+                        board[i * 2][(j + 2) * 2] == player) return true;
+
+                if (i + 2 < size &&
+                        board[i * 2][j * 2] == player &&
+                        board[(i + 1) * 2][j * 2] == player &&
+                        board[(i + 2) * 2][j * 2] == player) return true;
+
+                if (i + 2 < size && j + 2 < size &&
+                        board[i * 2][j * 2] == player &&
+                        board[(i + 1) * 2][(j + 1) * 2] == player &&
+                        board[(i + 2) * 2][(j + 2) * 2] == player) return true;
+
+                if (i + 2 < size && j - 2 >= 0 &&
+                        board[i * 2][j * 2] == player &&
+                        board[(i + 1) * 2][(j - 1) * 2] == player &&
+                        board[(i + 2) * 2][(j - 2) * 2] == player) return true;
+            }
+        }
+        return false;
+    }
+
+    private static void saveConfig(GameSettings settings) {
+        try {
+            FileWriter writer = new FileWriter("config.txt");
+            writer.write(settings.nameX + "\n");
+            writer.write(settings.nameO + "\n");
+            writer.write(settings.boardSize + "\n");
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Помилка збереження конфігурації.");
+        }
+    }
+
+    private static GameSettings loadConfig() {
+        try {
+            File file = new File("config.txt");
+            if (!file.exists()) {
+                GameSettings defaultSettings = new GameSettings("Гравець X", "Гравець O", 3);
+                saveConfig(defaultSettings);
+                return defaultSettings;
+            } else {
+                Scanner sc = new Scanner(file);
+                String nameX = sc.nextLine();
+                String nameO = sc.nextLine();
+                int size = Integer.parseInt(sc.nextLine());
+                sc.close();
+                return new GameSettings(nameX, nameO, size);
+            }
+        } catch (IOException e) {
+            return new GameSettings("Гравець X", "Гравець O", 3);
+        }
+    }
+
+    private static void saveStats(GameStats stats) {
+        try {
+            FileWriter writer = new FileWriter("stats.txt", true);
+            writer.write(stats.pobeda() + "\n");
+            writer.close();
+        } catch (IOException e) {
+            System.out.println("Помилка збереження статистики.");
+        }
+    }
+
+    private static void showStats() {
+        try {
+            File file = new File("stats.txt");
+            if (!file.exists()) {
+                System.out.println("Статистика відсутня.");
+                return;
+            }
+            Scanner sc = new Scanner(file);
+            System.out.println("=== Статистика ===");
+            while (sc.hasNextLine()) {
+                System.out.println(sc.nextLine());
+            }
+            sc.close();
+        } catch (IOException e) {
+            System.out.println("Помилка читання статистики.");
+        }
+    }
+}
+//GameSettings
+public class GameSettings {
+    public String nameX;
+    public String nameO;
+    public int boardSize;
+
+    public GameSettings(String nameX, String nameO, int boardSize) {
+        this.nameX = nameX;
+        this.nameO = nameO;
+        this.boardSize = boardSize;
+    }
+}
+//GameStats
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+public class GameStats {
+    public String winnerName;
+    public String symbol;
+    public int boardSize;
+    public String date;
+
+    public GameStats(String winnerName, String symbol, int boardSize) {
+        this.winnerName = winnerName;
+        this.symbol = symbol;
+        this.boardSize = boardSize;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm");
+        this.date = LocalDateTime.now().format(formatter);
+    }
+
+    public String pobeda() {
+        return "Переможець: " + winnerName + " (" + symbol + "), Розмір: " + boardSize + "x" + boardSize +
+                ", Дата: " + date;
+    }
+}
+//GameBoard
+public class GameBoard {
+    public char[][] board;
+
+    public GameBoard(int size) {
+        board = new char[size * 2 - 1][size * 2 - 1];
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[i].length; j++) {
+                if (i % 2 == 0 && j % 2 == 0) board[i][j] = ' ';
+                else if (i % 2 == 0) board[i][j] = '|';
+                else if (j % 2 == 0) board[i][j] = '-';
+                else board[i][j] = ' ';
+            }
+        }
+    }
+}
