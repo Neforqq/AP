@@ -1,0 +1,16 @@
+public class SubsetSum {
+    public static void main(String[] args) {
+        int[] a = {3, 1, 5, 9};
+        System.out.println(canSum(a, 14)); 
+    }
+    public static boolean canSum(int[] a, int S) {
+        boolean[] dp = new boolean[S + 1];
+        dp[0] = true;
+        for (int i = 0; i < a.length; i++) {
+            for (int j = S; j >= a[i]; j--) {
+                dp[j] = dp[j] || dp[j - a[i]];
+            }
+        }
+        return dp[S];
+    }
+}
