@@ -1,0 +1,20 @@
+public class MaxNonAdjacentSum {
+    public static int maxSum(int[] a) {
+        if (a.length == 0) return 0;
+        if (a.length == 1) return a[0];
+
+        int includ = a[0];      
+        int exclud = 0;      
+
+        for (int i = 1; i < a.length; i++) {
+            int newExclud = Math.max(includ, exclud);
+            includ = exclud + a[i];
+            exclud = newExclud;
+        }
+        return Math.max(includ, exclud);
+    }
+    public static void main(String[] args) {
+        int[] a = {3, 2, 7, 10};
+        System.out.println(maxSum(a));
+    }
+}
